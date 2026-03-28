@@ -58,13 +58,13 @@ exports.handler = async (event) => {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "anthropic-beta": "web-search-2025-03-05",
-      },
+  "Content-Type": "application/json",
+  "x-api-key": apiKey,
+  "anthropic-version": "2023-06-01",
+  "anthropic-beta": "web-search-2025-03-05",
+},
       body: JSON.stringify({
-        model: "claude-3-5-sonnet-20241022",
+       model: "claude-3-5-sonnet-20241022",
         max_tokens: 2000,
         system: SYSTEM_PROMPT,
         tools: [{ type: "web_search_20250305", name: "web_search" }],
