@@ -23,6 +23,15 @@ const EXAMPLES = [
   "Francia Márquez fue la primera mujer afrocolombiana en ser vicepresidenta de Colombia",
 ];
 
+function SectionTitle({ color, label }) {
+  return (
+    <div style={{ display:"flex", alignItems:"center", gap:"8px", marginBottom:"12px" }}>
+      <div style={{ width:"3px", height:"16px", background:color, borderRadius:"2px" }}/>
+      <span style={{ color:"#0f172a", fontSize:"12px", fontWeight:"800", textTransform:"uppercase", letterSpacing:"1px" }}>{label}</span>
+    </div>
+  );
+}
+
 export default function App() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -85,6 +94,7 @@ export default function App() {
       </nav>
 
       <div style={{ maxWidth:"660px", margin:"0 auto", padding:"40px 18px 70px" }}>
+
         {!result && !loading && (
           <div style={{ textAlign:"center", marginBottom:"30px" }}>
             <div style={{ fontSize:"42px", marginBottom:"12px" }}>👂</div>
@@ -99,7 +109,8 @@ export default function App() {
 
         {!result && (
           <div style={{ background:"white", borderRadius:"18px", overflow:"hidden", boxShadow:"0 20px 70px rgba(0,0,0,0.3)", marginBottom:"18px" }}>
-            <textarea value={text}
+            <textarea
+              value={text}
               onChange={e => e.target.value.length <= MAX && setText(e.target.value)}
               onKeyDown={e => (e.ctrlKey || e.metaKey) && e.key === "Enter" && verify()}
               disabled={loading}
@@ -239,4 +250,17 @@ export default function App() {
           </div>
         )}
 
-        <div style={{ tex
+        <div style={{ textAlign:"center", marginTop:"32px", color:"rgba(255,255,255,0.35)", fontSize:"11px" }}>
+          LaOrejaRoja · Construye criterio · No compartas sin verificar
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg) } }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(14px) } to { opacity:1; transform:translateY(0) } }
+        * { box-sizing: border-box }
+        textarea::placeholder { color: #94a3b8 }
+      `}</style>
+    </div>
+  );
+}
