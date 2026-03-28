@@ -68,7 +68,8 @@ exports.handler = async (event) => {
     if (data.stop_reason === "end_turn") {
       const textBlock = [...data.content].reverse().find(b => b.type === "text");
       if (!textBlock || !textBlock.text) return { statusCode: 500, headers, body: JSON.stringify({ error: "Sin respuesta de texto" }) };
-      const raw = textBlock.text.replace(/```json|```/g, "").trim();
+      const cleaned = textBlock.text.replace(/<cite[^>]*>|<\/cite>/g, "");
+const raw = cleaned.replace(/```json|```/g, "").trim();
       const match = raw.match(/\{[\s\S]*\}/);
       if (!match) return { statusCode: 500, headers, body: JSON.stringify({ error: "Sin JSON", raw: raw.slice(0, 300) }) };
       const result = JSON.parse(match[0]);
