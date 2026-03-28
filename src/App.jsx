@@ -79,10 +79,7 @@ export default function App() {
   return (
     <div style={{ minHeight:"100vh", background:"linear-gradient(160deg,#317976 0%,#1e4f4d 100%)", fontFamily:"'Inter','Helvetica Neue',Arial,sans-serif" }}>
       <nav style={{ background:"rgba(0,0,0,0.3)", backdropFilter:"blur(12px)", padding:"14px 24px", display:"flex", alignItems:"center", gap:"12px", borderBottom:"1px solid rgba(255,255,255,0.1)", position:"sticky", top:0, zIndex:10 }}>
-        <svg width="40" height="40" viewBox="0 0 40 40">
-          <circle cx="20" cy="20" r="20" fill="#111"/>
-          <text x="20" y="27" textAnchor="middle" fill="white" fontSize="14" fontWeight="800" fontFamily="Georgia,serif" letterSpacing="-0.5">or</text>
-        </svg>
+        <img src="/logo.png" alt="LaOrejaRoja" style={{ width:"40px", height:"40px", borderRadius:"50%", objectFit:"cover" }} />
         <div>
           <div style={{ color:"white", fontSize:"17px", fontWeight:"800", lineHeight:1 }}>LaOrejaRoja</div>
           <div style={{ color:"rgba(255,255,255,0.55)", fontSize:"10px", letterSpacing:"1.8px", textTransform:"uppercase", marginTop:"2px" }}>Verificador · Beta</div>
