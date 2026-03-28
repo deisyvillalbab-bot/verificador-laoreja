@@ -1,3 +1,4 @@
+
 exports.handler = async (event) => {
   const headers = {
     "Access-Control-Allow-Origin": "*",
@@ -6,16 +7,12 @@ exports.handler = async (event) => {
   };
 
   if (event.httpMethod === "OPTIONS") return { statusCode: 200, headers, body: "" };
-  if (event.httpMethod !== "POST") return { statusCode: 405, headers, body: JSON.stringify({ error: "Method not allowed" }) };
-
-  let body;
-  try { body = JSON.parse(event.body || "{}"); } catch (e) { return { statusCode: 400, headers, body: JSON.stringify({ error: "Body inválido" }) }; }
-
-  const { noticia } = body;
-  if (!noticia?.trim()) return { statusCode: 400, headers, body: JSON.stringify({ error: "Falta la afirmación" }) };
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return { statusCode: 500, headers, body: JSON.stringify({ error: "API key no configurada" }) };
+  if (!apiKey) return { statusCode: 500, headers, body: JSON.stringify({ error: "API key no encontrada en variables de entorno" }) };
+
+  // Mostrar primeros 10 caracteres de la key para verificar que es la correcta
+  const keyPreview = apiKey.substring(0, 15) + "...";
 
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -26,18 +23,21 @@ exports.handler = async (event) => {
     },
     body: JSON.stringify({
       model: "claude-3-5-sonnet-20241022",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: `Responde solo con este JSON exacto sin texto adicional: {"veredicto":"VERDADERO","confianza":80,"resumen":"Prueba exitosa de conexión para LaOrejaRoja.","fuentes":[],"contexto":"","senales_alerta":""}` }],
+      max_tokens: 100,
+      messages: [{ role: "user", content: "Di solo: hola" }],
     }),
   });
 
   const raw = await res.text();
-  if (!res.ok) return { statusCode: 500, headers, body: JSON.stringify({ error: "Error API: " + res.status, detail: raw }) };
 
-  const data = JSON.parse(raw);
-  const text = data.content?.find(b => b.type === "text")?.text || "";
-  const match = text.match(/\{[\s\S]*\}/);
-  if (!match) return { statusCode: 500, headers, body: JSON.stringify({ error: "Sin JSON", raw: text }) };
-
-  return { statusCode: 200, headers, body: match[0] };
+  // Devolver TODO para diagnóstico
+  return {
+    statusCode: 200,
+    headers,
+    body: JSON.stringify({
+      status: res.status,
+      keyPreview,
+      response: raw
+    })
+  };
 };
