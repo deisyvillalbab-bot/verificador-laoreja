@@ -33,8 +33,15 @@ exports.handler = async (event) => {
     return { statusCode: 405, headers, body: JSON.stringify({ error: "Method not allowed" }) };
   }
 
-  const { noticia } = JSON.parse(event.body || "{}");
-  if (!noticia?.trim()) {
+  let body;
+  try {
+    body = JSON.parse(event.body || "{}");
+  } catch (e) {
+    return { statusCode: 400, headers, body: JSON.stringify({ error: "Body inválido" }) };
+  }
+
+  const { noticia } = body;
+  if (!noticia || !noticia.trim()) {
     return { statusCode: 400, headers, body: JSON.stringify({ error: "Falta la afirmación a verificar" }) };
   }
 
@@ -43,7 +50,9 @@ exports.handler = async (event) => {
     return { statusCode: 500, headers, body: JSON.stringify({ error: "API key no configurada" }) };
   }
 
-  let messages = [{ role: "user", content: `Verifica esta afirmación para LaOrejaRoja: "${noticia.trim()}"` }];
+  let messages = [
+    { role: "user", content: `Verifica esta afirmación para LaOrejaRoja: "${noticia.trim()}"` }
+  ];
 
   for (let i = 0; i < 8; i++) {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -65,7 +74,7 @@ exports.handler = async (event) => {
 
     if (!res.ok) {
       const err = await res.text();
-      return { statusCode: 500, headers, body: JSON.stringify({ error: `Error API: ${res.status}`, detail: err }) };
+      return { statusCode: 500, headers, body: JSON.stringify({ error: "Error API: " + res.status, detail: err }) };
     }
 
     const data = await res.json();
@@ -73,7 +82,7 @@ exports.handler = async (event) => {
 
     if (data.stop_reason === "end_turn") {
       const textBlock = [...data.content].reverse().find(b => b.type === "text");
-      if (!textBlock?.text) {
+      if (!textBlock || !textBlock.text) {
         return { statusCode: 500, headers, body: JSON.stringify({ error: "Sin respuesta de texto" }) };
       }
       const raw = textBlock.text.replace(/```json|```/g, "").trim();
@@ -88,9 +97,17 @@ exports.handler = async (event) => {
     if (data.stop_reason === "tool_use") {
       const toolResults = data.content
         .filter(b => b.type === "tool_use")
-        .map(b => ({ type: "tool_result", tool_use_id: b.id, content: JSON.stringify(b.output ?? "") }));
+        .map(b => ({
+          type: "tool_result",
+          tool_use_id: b.id,
+          content: JSON.stringify(b.output || ""),
+        }));
       messages = [...messages, { role: "user", content: toolResults }];
       continue;
     }
 
-    return { statusCode: 500, headers, body: JSON.stringify({ error: `Stop reason inespe
+    return { statusCode: 500, headers, body: JSON.stringify({ error: "Stop reason inesperado: " + data.stop_reason }) };
+  }
+
+  return { statusCode: 500, headers, body: JSON.stringify({ error: "Demasiados turnos sin respuesta final" }) };
+};
