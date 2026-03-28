@@ -79,7 +79,7 @@ export default function App() {
   return (
     <div style={{ minHeight:"100vh", background:"linear-gradient(160deg,#317976 0%,#1e4f4d 100%)", fontFamily:"'Inter','Helvetica Neue',Arial,sans-serif" }}>
       <nav style={{ background:"rgba(0,0,0,0.3)", backdropFilter:"blur(12px)", padding:"14px 24px", display:"flex", alignItems:"center", gap:"12px", borderBottom:"1px solid rgba(255,255,255,0.1)", position:"sticky", top:0, zIndex:10 }}>
-        <img src="/logo.png" alt="LaOrejaRoja" style={{ width:"40px", height:"40px", borderRadius:"50%", objectFit:"cover" }} />
+        <img src="/logo.png" alt="LaOrejaRoja" style={{ width:"48px", height:"48px", borderRadius:"50%", objectFit:"cover", objectPosition:"center" }} />
         <div>
           <div style={{ color:"white", fontSize:"17px", fontWeight:"800", lineHeight:1 }}>LaOrejaRoja</div>
           <div style={{ color:"rgba(255,255,255,0.55)", fontSize:"10px", letterSpacing:"1.8px", textTransform:"uppercase", marginTop:"2px" }}>Verificador · Beta</div>
